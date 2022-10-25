@@ -1,9 +1,13 @@
 * Talsam
 
-LED Pins are; [4, 5, 8
+LED Pins are; [4, 5, 8,
                3, 6, 9,
                2, 7, 10]
 
+Grid Numbers: [49, 48, 35,
+               54, 50, 46,
+               47, 52, 51]
+img: ./matrixGridNumbers.jpeg
 
 I2C device found at address 0x27!
 
@@ -14,7 +18,7 @@ used article for implementing the LCD I2C screen: https://create.arduino.cc/proj
 Pseudocode:
   i. Start or push the button
      ii. LEDs keep blinking for 3 seconds randomly
-    iii. Selects 3 random numbers from the grid box (axis: x, y, diagonal)
+    iii. Selects 3 random numbers from the grid box (axis: x, y or diagonal)
      iv. LEDs go out.
       v. Displays the 3 numbers on the screen on the 1st row. (500ms)
             between them the + sign and the total sum after =
