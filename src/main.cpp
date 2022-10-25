@@ -7,21 +7,30 @@
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 const int pushButtonPin = 11;  // the number of the pushbutton pin
+const int firstLed = 4;		// LEDs
+const int secondLed = 5;
+const int thirdLed = 8;
+const int forthLed = 3;
+const int fifthLed = 6;
+const int sixthLed = 9;
+const int seventhLed = 2;
+const int eighthLed = 7;
+const int ninthLed = 10;
 
 int pushButtonState = 0;
 
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
 	pinMode(LED_BUILTIN, OUTPUT);
-	pinMode(2, OUTPUT);
-	pinMode(3, OUTPUT);
-	pinMode(4, OUTPUT);
-	pinMode(5, OUTPUT);
-	pinMode(6, OUTPUT);
-	pinMode(7, OUTPUT);
-	pinMode(8, OUTPUT);
-	pinMode(9, OUTPUT);
-	pinMode(10, OUTPUT);
+	pinMode(firstLed, OUTPUT);
+	pinMode(secondLed, OUTPUT);
+	pinMode(thirdLed, OUTPUT);
+	pinMode(forthLed, OUTPUT);
+	pinMode(fifthLed, OUTPUT);
+	pinMode(sixthLed, OUTPUT);
+	pinMode(seventhLed, OUTPUT);
+	pinMode(eighthLed, OUTPUT);
+	pinMode(ninthLed, OUTPUT);
 
 	pinMode(pushButtonPin, INPUT);
 
@@ -57,4 +66,8 @@ void loop() {
 	} else {
 		digitalWrite(6, LOW);
 	}
+}
+
+void start() {
+	digitalWrite(3, HIGH);
 }
