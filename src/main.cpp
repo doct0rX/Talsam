@@ -6,6 +6,10 @@
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
+const int pushButtonPin = 11;  // the number of the pushbutton pin
+
+int pushButtonState = 0;
+
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
 	pinMode(LED_BUILTIN, OUTPUT);
@@ -19,6 +23,8 @@ void setup() {
 	pinMode(9, OUTPUT);
 	pinMode(10, OUTPUT);
 
+	pinMode(pushButtonPin, INPUT);
+
   // digitalWrite(2, HIGH);
   digitalWrite(3, HIGH);
   // digitalWrite(4, HIGH);
@@ -29,7 +35,7 @@ void setup() {
   // digitalWrite(9, HIGH);
   // digitalWrite(10, HIGH);
 
-	// Serial.begin(9600);
+	Serial.begin(9600);
 	lcd.begin();
 	lcd.backlight();
 	lcd.clear();
@@ -39,8 +45,16 @@ void setup() {
 
 
 void loop() {
-	digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-	delay(1500);                       // wait for a second
-	digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-	delay(1500); 
+	pushButtonState = digitalRead(pushButtonPin);
+	// digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+	// delay(1500);                       // wait for a second
+	// digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+	// delay(1500);
+
+	if (pushButtonState == HIGH) {
+		Serial.print("clicked");
+		digitalWrite(6, HIGH);
+	} else {
+		digitalWrite(6, LOW);
+	}
 }
