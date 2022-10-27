@@ -4,10 +4,19 @@ LED Pins are; [4, 5, 8,
                3, 6, 9,
                2, 7, 10]
 
+///// Used
 Grid Numbers: [49, 48, 35,
                54, 50, 46,
                47, 52, 51]
 img: ./matrixGridNumbers.jpeg
+//////
+
+///// 
+Grid Numbers: [20, 90, 40,
+               70, 50, 30,
+               60, 10, 80]
+img: ./gridNumbers.jpeg
+/////
 
 I2C device found at address 0x27!
 
