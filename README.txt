@@ -5,7 +5,7 @@ LED Pins are; [4, 5, 8,
                2, 7, 10]
 
 ///// Used
-Grid Numbers: [49, 48, 35,
+Grid Numbers: [49, 48, 53,
                54, 50, 46,
                47, 52, 51]
 img: ./matrixGridNumbers.jpeg
