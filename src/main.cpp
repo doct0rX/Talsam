@@ -5,45 +5,45 @@
 #include <GOTStateMachine.h>
 
 
-GOTStateMachine stateMachine(50);	// execute every 50 milliseconds
+GOTStateMachine stateMachine(100);	// execute every 50 milliseconds
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 #define BLINKING_LIGHT_RONDOMLY_INTERVAL 3000	// blinking light time
 
 const int pushButtonPin = 11;  // the number of the push button pin
-const int firstLed = 4;		// LEDs [D2.. D10]
-const int secondLed = 5;
-const int thirdLed = 8;
-const int forthLed = 3;
-const int fifthLed = 6;
-const int sixthLed = 9;
-const int seventhLed = 2;
-const int eighthLed = 7;
-const int ninthLed = 10;
 
+int leds[9] = {4, 5, 8, // LEDs [D2.. D10]
+			   3, 6, 9,
+			   2, 7, 10};
 
-// TODO: remove this vars later and work with numbers directly
-int leds[9] = {firstLed, secondLed, thirdLed,
-			   forthLed, fifthLed, sixthLed,
-			   seventhLed, eighthLed, ninthLed};
+int gridNumbers[8][3] = {
+					{49, 48, 53},
+					{54, 50, 46},
+					{47, 52, 51},
+					{49, 54, 47},
+					{48, 50, 52},
+					{53, 46, 51},
+					{49, 50, 51},
+					{53, 50, 47}
+				};
 
 bool pushButtonState = false;
-int publicMs = (millis() + 500)/1000;
+int selectedAxis = 0;
 
 void initialize();
 void start();
 void randomLedsBlinking();
 void setupStateMachine();
 void printOnScreenAndStopLeds();
+void turnOffLeds();
+void lightCoordinatedLeds();
+void printYa3aleem();
 
 void setup() {
-  	// initialize the Pins
-	initialize();
-	
-	lcd.setCursor(4,0);
-	lcd.print("Hackster");
-	
+	initialize();	
 	stateMachine.setStartState(randomLedsBlinking);
+	lcd.setCursor(5,0);
+	lcd.print("TALSAM");
 }
 
 
@@ -73,6 +73,9 @@ void initialize() {
 
 
 void randomLedsBlinking() {
+	lcd.clear();
+	selectedAxis = random(0, 9);
+
 	digitalWrite(leds[random(0, sizeof(leds)/sizeof(int))], HIGH);
 	delay(random(0, 200));
 	digitalWrite(leds[random(0, sizeof(leds)/sizeof(int))], LOW);
@@ -85,9 +88,95 @@ void randomLedsBlinking() {
 
 void printOnScreenAndStopLeds() {
 	lcd.clear();
-	lcd.setCursor(4,0);
-	lcd.print("DONE!!!");
+	lcd.setCursor(0,0);
+	String stringNumbers = " ";
+	for (size_t c = 0; c < sizeof(gridNumbers[0])/sizeof(int); c++) {
+		if (c != 2) {
+			stringNumbers += String(gridNumbers[selectedAxis][c]) + "+";
+		} else {
+			stringNumbers += String(gridNumbers[selectedAxis][c]);
+		}
+	}
+	delay(300);
+	stringNumbers += " = 150";
+	lcd.print(stringNumbers);
+	if (stateMachine.isDelayComplete(500)) {
+		stateMachine.changeState(turnOffLeds);
+		return;
+	}
+}
+
+void turnOffLeds() {
 	for (size_t led = 0; led < sizeof(leds)/sizeof(int); led++) {
-		digitalWrite(leds[led], LOW);
+			digitalWrite(leds[led], LOW);
+	}
+	if (stateMachine.isDelayComplete(1000)) {
+		stateMachine.changeState(lightCoordinatedLeds);
+		return;
+	}
+}
+
+void lightCoordinatedLeds() {
+	Serial.println(selectedAxis);
+	delay(200);
+	switch (selectedAxis) {
+		case 0:
+			for (size_t i = 0; i < 3; i++) {
+				digitalWrite(leds[i], HIGH);
+			}
+			break;
+		case 1:
+			for (size_t i = 3; i < 6; i++) {
+				digitalWrite(leds[i], HIGH);
+			}
+			break;
+		case 2:
+			for (size_t i = 6; i < 9; i++) {
+				digitalWrite(leds[i], HIGH);
+			}
+			break;
+		case 3:
+			for (size_t i = 0; i < 7; i+=3) {
+				digitalWrite(leds[i], HIGH);
+			}
+			break;
+		case 4:
+			for (size_t i = 1; i < 8; i+=3) {
+				digitalWrite(leds[i], HIGH);
+			}
+			break;
+		case 5:
+			for (size_t i = 2; i < 9; i+=3) {
+				digitalWrite(leds[i], HIGH);
+			}
+			break;
+		case 6:
+			for (size_t i = 0; i < 9; i+=4) {
+				digitalWrite(leds[i], HIGH);
+			}
+			break;
+		case 7:
+			for (size_t i = 2; i < 7; i+=2) {
+				digitalWrite(leds[i], HIGH);
+			}
+			break;
+		default:
+			break;;
+	}
+	if (stateMachine.isDelayComplete(500)) {
+		stateMachine.changeState(printYa3aleem);
+		return;
+	}
+}
+
+void printYa3aleem() {
+	for (int i = 0; i < 151; i++) {
+		lcd.setCursor(1, 2);
+		lcd.print("Ya 3aleem");
+		delay(150);
+		lcd.print("            ");
+	}
+	if (stateMachine.isDelayComplete(7000)) {
+		return;
 	}
 }
