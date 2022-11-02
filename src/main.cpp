@@ -5,7 +5,7 @@
 #include <GOTStateMachine.h>
 
 
-GOTStateMachine stateMachine(100);	// execute every 50 milliseconds
+GOTStateMachine stateMachine(50);	// execute every 50 milliseconds
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 #define BLINKING_LIGHT_RONDOMLY_INTERVAL 3000	// blinking light time
@@ -42,8 +42,6 @@ void printYa3aleem();
 void setup() {
 	initialize();	
 	stateMachine.setStartState(randomLedsBlinking);
-	lcd.setCursor(5,0);
-	lcd.print("TALSAM");
 }
 
 
@@ -75,6 +73,9 @@ void initialize() {
 void randomLedsBlinking() {
 	lcd.clear();
 	selectedAxis = random(0, 9);
+
+	lcd.setCursor(5,0);
+	lcd.print("TALSAM");
 
 	digitalWrite(leds[random(0, sizeof(leds)/sizeof(int))], HIGH);
 	delay(random(0, 200));
@@ -117,6 +118,7 @@ void turnOffLeds() {
 }
 
 void lightCoordinatedLeds() {
+	//FIXME: remove the delay
 	Serial.println(selectedAxis);
 	delay(200);
 	switch (selectedAxis) {
@@ -163,19 +165,19 @@ void lightCoordinatedLeds() {
 		default:
 			break;;
 	}
-	if (stateMachine.isDelayComplete(500)) {
+	if (stateMachine.isDelayComplete(1000)) {
 		stateMachine.changeState(printYa3aleem);
 		return;
 	}
 }
 
 void printYa3aleem() {
-	for (int i = 0; i < 151; i++) {
-		lcd.setCursor(1, 2);
-		lcd.print("Ya 3aleem");
-		delay(150);
-		lcd.print("            ");
-	}
+	lcd.setCursor(1, 1);
+	lcd.print("Ya 3aleem");
+	delay(500);
+	lcd.setCursor(1, 1);
+	lcd.print("           ");
+	delay(500);
 	if (stateMachine.isDelayComplete(7000)) {
 		return;
 	}
