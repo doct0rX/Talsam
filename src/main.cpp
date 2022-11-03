@@ -243,6 +243,7 @@ void printYa3aleemAndCount() {
 	lcd.print("           ");
 	delay(500);
 	counter++;
+	// FIXME: the counter and the timer 
 	if (stateMachine.isDelayComplete(10000) || counter >= 10) {
 		stateMachine.changeState(writesTamatOrDoneOnLcd);
 		return;
