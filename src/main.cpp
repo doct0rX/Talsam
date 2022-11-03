@@ -28,6 +28,7 @@ int gridNumbers[8][3] = {
 				};
 
 bool pushButtonState = false;
+bool canClick = false;
 int selectedAxis = 0;
 int counter = 1;
 
@@ -52,9 +53,9 @@ void setup() {
 void loop() {
 	pushButtonState = digitalRead(pushButtonPin);
 	stateMachine.execute();
-	if (pushButtonState == HIGH) {
+	if (pushButtonState == HIGH && canClick) {
+		canClick = false;
 		stateMachine.setStartState(randomLedsBlinking);
-		
 	}
 }
 
@@ -197,7 +198,8 @@ void writesTamatOrDoneOnLcd() {
 void turnOffLedsAndCLearScreen() {
 	turnOffLeds();
 	lcd.clear();
-	if (stateMachine.isDelayComplete(2000)) {
+	canClick = true;
+	if (stateMachine.isDelayComplete(1000)) {
 		stateMachine.changeState(turnOffLedsAndCLearScreen);
 		return;
 	}
