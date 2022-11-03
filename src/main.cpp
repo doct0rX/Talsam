@@ -29,6 +29,7 @@ int gridNumbers[8][3] = {
 
 bool pushButtonState = false;
 int selectedAxis = 0;
+int counter = 1;
 
 void initialize();
 void start();
@@ -37,7 +38,10 @@ void setupStateMachine();
 void printOnScreenAndStopLeds();
 void turnOffLeds();
 void lightCoordinatedLeds();
-void printYa3aleem();
+void printYa3aleemAndCount();
+void turnOffLedsAndCLearScreen();
+void writesTamatOrDoneOnLcd();
+void turnOffLedsAndCLearScreen();
 
 void setup() {
 	initialize();	
@@ -50,6 +54,7 @@ void loop() {
 	stateMachine.execute();
 	if (pushButtonState == HIGH) {
 		stateMachine.setStartState(randomLedsBlinking);
+		
 	}
 }
 
@@ -118,67 +123,82 @@ void turnOffLeds() {
 }
 
 void lightCoordinatedLeds() {
-	//FIXME: remove the delay
-	Serial.println(selectedAxis);
-	delay(200);
 	switch (selectedAxis) {
 		case 0:
-			for (size_t i = 0; i < 3; i++) {
+			for (size_t i = 0; i < 3; i++)
 				digitalWrite(leds[i], HIGH);
-			}
 			break;
 		case 1:
-			for (size_t i = 3; i < 6; i++) {
+			for (size_t i = 3; i < 6; i++)
 				digitalWrite(leds[i], HIGH);
-			}
 			break;
 		case 2:
-			for (size_t i = 6; i < 9; i++) {
+			for (size_t i = 6; i < 9; i++)
 				digitalWrite(leds[i], HIGH);
-			}
 			break;
 		case 3:
-			for (size_t i = 0; i < 7; i+=3) {
+			for (size_t i = 0; i < 7; i+=3)
 				digitalWrite(leds[i], HIGH);
-			}
 			break;
 		case 4:
-			for (size_t i = 1; i < 8; i+=3) {
+			for (size_t i = 1; i < 8; i+=3)
 				digitalWrite(leds[i], HIGH);
-			}
 			break;
 		case 5:
-			for (size_t i = 2; i < 9; i+=3) {
+			for (size_t i = 2; i < 9; i+=3)
 				digitalWrite(leds[i], HIGH);
-			}
 			break;
 		case 6:
-			for (size_t i = 0; i < 9; i+=4) {
+			for (size_t i = 0; i < 9; i+=4)
 				digitalWrite(leds[i], HIGH);
-			}
 			break;
 		case 7:
-			for (size_t i = 2; i < 7; i+=2) {
+			for (size_t i = 2; i < 7; i+=2)
 				digitalWrite(leds[i], HIGH);
-			}
 			break;
 		default:
 			break;;
 	}
-	if (stateMachine.isDelayComplete(1000)) {
-		stateMachine.changeState(printYa3aleem);
+	if (stateMachine.isDelayComplete(100)) {
+		stateMachine.changeState(printYa3aleemAndCount);
+		counter = 1;
 		return;
 	}
 }
 
-void printYa3aleem() {
+void printYa3aleemAndCount() {
+	lcd.setCursor(12, 0);
+	lcd.print(counter);
 	lcd.setCursor(1, 1);
 	lcd.print("Ya 3aleem");
 	delay(500);
+	lcd.setCursor(12, 0);
+	lcd.print("   ");
 	lcd.setCursor(1, 1);
 	lcd.print("           ");
 	delay(500);
-	if (stateMachine.isDelayComplete(7000)) {
+	counter++;
+	if (stateMachine.isDelayComplete(10000) || counter >= 10) {
+		stateMachine.changeState(writesTamatOrDoneOnLcd);
+		return;
+	}
+}
+
+void writesTamatOrDoneOnLcd() {
+	lcd.clear();
+	lcd.setCursor(1, 6);
+	lcd.print("TAMAT");
+	if (stateMachine.isDelayComplete(2000)) {
+		stateMachine.changeState(turnOffLedsAndCLearScreen);
+		return;
+	}
+}
+
+void turnOffLedsAndCLearScreen() {
+	turnOffLeds();
+	lcd.clear();
+	if (stateMachine.isDelayComplete(2000)) {
+		stateMachine.changeState(turnOffLedsAndCLearScreen);
 		return;
 	}
 }
