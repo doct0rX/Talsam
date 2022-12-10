@@ -32,7 +32,7 @@ bool canClick = false;
 int selectedAxis = 0;
 int counter = 1;
 
-byte yaChar[] = {
+byte yaChar[8] = {
 	B10000,
 	B10000,
 	B10000,
@@ -43,8 +43,19 @@ byte yaChar[] = {
 	B00110
 };
 
+byte spaceChar[8] = {
+	B00000,
+	B00000,
+	B00000,
+	B00000,
+	B00000,
+	B00000,
+	B00000,
+	B00000
+};
 
-byte einChar[] = {
+
+byte einChar[8] = {
 	B00000,
 	B00000,
 	B00110,
@@ -55,7 +66,7 @@ byte einChar[] = {
 	B00000
 };
 
-byte lamChar[] = {
+byte lamChar[8] = {
 	B00100,
 	B00100,
 	B00100,
@@ -66,7 +77,7 @@ byte lamChar[] = {
 	B00000
 };
 
-byte ya2Char[] = {
+byte ya2Char[8] = {
 	B00000,
 	B00000,
 	B00000,
@@ -77,7 +88,7 @@ byte ya2Char[] = {
 	B00110
 };
 
-byte memeChar[] = {
+byte memeChar[8] = {
 	B00000,
 	B00000,
 	B00000,
@@ -88,7 +99,6 @@ byte memeChar[] = {
 	B10000
 };
 
-byte* aleemWordArray[5] = {memeChar, ya2Char, lamChar, einChar, yaChar};
 
 void initialize();
 void start();
@@ -128,6 +138,14 @@ void initialize() {
 		pinMode(leds[led], OUTPUT);
 	}
 	Serial.begin(9600);
+
+	lcd.createChar(2, yaChar);
+	lcd.createChar(3, spaceChar);
+	lcd.createChar(4, einChar);
+	lcd.createChar(5, lamChar);
+	lcd.createChar(6, ya2Char);
+	lcd.createChar(7, memeChar);
+
 	lcd.begin();
 	lcd.backlight();
 	lcd.clear();
@@ -184,36 +202,28 @@ void turnOffLeds() {
 void lightCoordinatedLeds() {
 	switch (selectedAxis) {
 		case 0:
-			for (size_t i = 0; i < 3; i++)
-				digitalWrite(leds[i], HIGH);
+			for (size_t i = 0; i < 3; i++) digitalWrite(leds[i], HIGH);
 			break;
 		case 1:
-			for (size_t i = 3; i < 6; i++)
-				digitalWrite(leds[i], HIGH);
+			for (size_t i = 3; i < 6; i++)	digitalWrite(leds[i], HIGH);
 			break;
 		case 2:
-			for (size_t i = 6; i < 9; i++)
-				digitalWrite(leds[i], HIGH);
+			for (size_t i = 6; i < 9; i++)	digitalWrite(leds[i], HIGH);
 			break;
 		case 3:
-			for (size_t i = 0; i < 7; i+=3)
-				digitalWrite(leds[i], HIGH);
+			for (size_t i = 0; i < 7; i+=3)	digitalWrite(leds[i], HIGH);
 			break;
 		case 4:
-			for (size_t i = 1; i < 8; i+=3)
-				digitalWrite(leds[i], HIGH);
+			for (size_t i = 1; i < 8; i+=3)	digitalWrite(leds[i], HIGH);
 			break;
 		case 5:
-			for (size_t i = 2; i < 9; i+=3)
-				digitalWrite(leds[i], HIGH);
+			for (size_t i = 2; i < 9; i+=3)	digitalWrite(leds[i], HIGH);
 			break;
 		case 6:
-			for (size_t i = 0; i < 9; i+=4)
-				digitalWrite(leds[i], HIGH);
+			for (size_t i = 0; i < 9; i+=4)	digitalWrite(leds[i], HIGH);
 			break;
 		case 7:
-			for (size_t i = 2; i < 7; i+=2)
-				digitalWrite(leds[i], HIGH);
+			for (size_t i = 2; i < 7; i+=2)	digitalWrite(leds[i], HIGH);
 			break;
 		default:
 			break;;
@@ -228,23 +238,17 @@ void lightCoordinatedLeds() {
 void printYa3aleemAndCount() {
 	lcd.setCursor(12, 0);
 	lcd.print(counter);
-	lcd.setCursor(1, 1);
-	// lcd.print("Ya 3aleem");
-	String s;
-	// for (size_t i = 0; i < sizeof(aleemWordArray)/sizeof(int); i++) {
-	// 	s += (char*)aleemWordArray[i];
-	// }
-	// Serial.println(s);
-	lcd.createChar(0, memeChar);
+	lcd.setCursor(5, 1);
+	for (size_t i = 7; i > 1; i--) {	lcd.write(i);	}
 	delay(500);
 	lcd.setCursor(12, 0);
 	lcd.print("   ");
 	lcd.setCursor(1, 1);
-	lcd.print("           ");
+	lcd.print("               ");
 	delay(500);
 	counter++;
-	// FIXME: the counter and the timer 
-	if (stateMachine.isDelayComplete(10000) || counter >= 10) {
+	
+	if (stateMachine.isDelayComplete(163000) || counter >= 151) {
 		stateMachine.changeState(writesTamatOrDoneOnLcd);
 		return;
 	}
